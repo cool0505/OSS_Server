@@ -5,16 +5,15 @@ cred = credentials.Certificate('oss-project-f6fb6-firebase-adminsdk-9vwfe-27b8f5
 firebase_admin.initialize_app(cred,{
     'databaseURL' : 'https://oss-project-f6fb6-default-rtdb.firebaseio.com/'
 })
-
-def aritcle_dbsaver(title,content,category,summary, keyword, sentiment):
-    num=0
+def aritcle_dbsaver(title, content, category, summary, keyword, sentiment):
+    num = 0;
     ref = db.reference('news/%s'%(category))
     snapshot = ref.get()
     for key in snapshot:
         num+=1
-        dir = db.reference('news/%s/%s'% (category,num))
-        dir.update({'title':'%s'%(title)})
-        dir.update({'content':'%s'%(content)})
-        dir.update({'summary': '%s' % (summary)})
-        dir.update({'keyword': '%s' % (','.join(keyword))})
-        dir.update({'sentiment': '%s' % (sentiment)})
+    dir = db.reference('news/%s/%s'% (category,num))
+    dir.update({'title':'%s'%(title)})
+    dir.update({'content':'%s'%(content)})
+    dir.update({'summary': '%s' % (summary)})
+    dir.update({'keyword': '%s' % (','.join(keyword))})
+    dir.update({'sentiment': '%s' % (sentiment)})
