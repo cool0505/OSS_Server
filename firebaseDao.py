@@ -10,9 +10,8 @@ def aritcle_dbsaver(title,content,category,summary, keyword, sentiment):
     num=0
     ref = db.reference('news/%s'%(category))
     snapshot = ref.get()
-    if snapshot > 0:
-        for key in snapshot:
-             num+=1
+    for key in snapshot:
+        num+=1
     dir = db.reference('news/%s/%s'% (category,num))
     dir.update({'title':'%s'%(title)})
     dir.update({'content':'%s'%(content)})
