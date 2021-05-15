@@ -11,7 +11,8 @@ def aritcle_dbsaver(title, content, category, summary, keyword, sentiment):
     snapshot = ref.get()
     if snapshot:
         for key in snapshot:
-            num+=1
+            num=num+1
+        print(num)
     dir = db.reference('news/%s/%s'% (category,num))
     dir.update({'title':'%s'%(title)})
     dir.update({'content':'%s'%(content)})
