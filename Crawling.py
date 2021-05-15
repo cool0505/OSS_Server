@@ -3,24 +3,24 @@ import requests
 from lxml.html import fromstring
 from bs4 import  BeautifulSoup
 
-def news_link(category):
-    for sub in ['category']:
-        for i in range(1, 3):
-            url_page = '?page='
-            url = 'https://news.daum.net/breakingnews/' + sub + url_page + str(i)
-            res = requests.get(url)
+def news_link(category,Category_url):
+    for i in range(1, 3):
+        url_page = '?page='
+        url = 'https://news.daum.net/breakingnews/' + Category_url + url_page + str(i)
+        print(url)
+        res = requests.get(url)
 
-            parser = fromstring(res.text)
+        parser = fromstring(res.text)
 
-            article_list = parser.xpath('//div[@class="box_etc"]')
+        article_list = parser.xpath('//div[@class="box_etc"]')
 
-            parsed_articles = article_list[0].xpath('.//li')
+        parsed_articles = article_list[0].xpath('.//li')
 
-            for article in parsed_articles:
-                parsed_link = article.xpath('.//a[@href]')
+        for article in parsed_articles:
+            parsed_link = article.xpath('.//a[@href]')
 
-                link = parsed_link[0].get('href')
-                category.append(link)
+            link = parsed_link[0].get('href')
+            category.append(link)
     return category
 
 def split(category, category_ko):
