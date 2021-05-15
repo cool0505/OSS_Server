@@ -181,6 +181,9 @@ kkma = Kkma()
 
 
 def data(category_sentences):
+    sentiment_result =[]
+    summary_result=[]
+    keywords=[]
     for i in category_sentences:
         _sentences = kkma.sentences(i)
 
@@ -191,7 +194,9 @@ def data(category_sentences):
             word_str = ' '.join(word)
             words.append(word_str)
 
-        sentiment_result = sentiment_analysis(_sentences)
-        summary_result, keywords = summary(_sentences, words)
+        sentiment_result.append(sentiment_analysis(_sentences))
+        temp1,temp2=summary(_sentences, words)
+        summary_result.append(temp1)
+        keywords.append(temp2)
 
     return summary_result, keywords, sentiment_result
