@@ -36,7 +36,7 @@ def register(msg_received):
     try:
         db_cursor.execute(insert_query, insert_values)
         chat_db.commit()
-        sql="CREATE TABLE "+name+"(title VARCHAR(255) NOT NULL, content VARCHAR(255) NOT NULL, registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
+        sql="CREATE TABLE "+name+"(title VARCHAR(255) NOT NULL, content VARCHAR(255) NOT NULL, registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)default character set utf8 collate utf8_general_ci"
         db_cursor.execute(sql)
         chat_db.commit()
         return "success"
@@ -56,7 +56,7 @@ def login(msg_received):
         return "failure"
         return "success"
 try:
-    chat_db = mysql.connector.connect(host="localhost", user="root", passwd="0000", database="user")
+    chat_db = mysql.connector.connect(host="localhost", user="root", passwd="0000", database="user",charset='utf8')
 except:
     sys.exit("Error connecting to the database. Please check your inputs.")
 db_cursor = chat_db.cursor()
