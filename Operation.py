@@ -21,12 +21,11 @@ Category_urls= ['society','sports','politics','economic','foreign', 'culture','e
 def article_saver():
     for category, category_ko, category_en,Category_url in zip(Category, Category_ko, Category_En,Category_urls):
         titles, contents = Crawling.split(Crawling.news_link(category,Category_url), category_ko)
-        try:
-            summaries, keywords,sentiments = Sentiment_analysis.data(contents)
-            for title, content, summary, keyword, sentiment in zip(titles, contents, summaries, keywords,sentiments):
+        for title, content,in zip(titles, contents):
+            try:
+                summary, keyword, sentiment = Sentiment_analysis.data(content)
                 firebaseDao.aritcle_dbsaver(title, content, category_en,summary, keyword, sentiment)
-                sleep(30)
-        except:
-            print ("error skip /n")
-        sleep(100)
+            except:
+                print ("error skip /n")
+
 article_saver()

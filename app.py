@@ -61,17 +61,6 @@ except:
     sys.exit("Error connecting to the database. Please check your inputs.")
 db_cursor = chat_db.cursor()
 
-@app.route('/userlogin', methods=['POST'])
-def userLogin():
-    user = request.get_json()  # json 데이터를 받아옴
-    print(user)
-    return jsonify(user)  # 받아온 데이터를 다시 전송
-
-@app.route("/", methods=['POST', 'GET'])
-def t2s():
-    text = request.get_json()
-    print(text)
-    return send_file('audio.wav')
 @app.route('/ai', methods = ['GET', 'POST'])
 def ai():
     msg_received = request.get_json()
@@ -96,6 +85,18 @@ def streamwav(category,audionum):
     print(category)
     def generate(category,audionum):
         with open("news/%s/%s.wav" %(category,audionum), "rb") as fwav:
+            data = fwav.read(1024)
+            while data:
+                yield data
+                data = fwav.read(1024)
+    return Response(generate(category,audionum), mimetype="audio/x-wav")
+
+@app.route('/summary/<category>/<audionum>')
+def streamwav(category,audionum):
+    print(audionum)
+    print(category)
+    def generate(category,audionum):
+        with open("summary/%s/%s.wav" %(category,audionum), "rb") as fwav:
             data = fwav.read(1024)
             while data:
                 yield data

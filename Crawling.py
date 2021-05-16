@@ -4,7 +4,7 @@ from lxml.html import fromstring
 from bs4 import  BeautifulSoup
 
 def news_link(category,Category_url):
-    for i in range(1, 3):
+    for i in range(1, 2):
         url_page = '?page='
         url = 'https://news.daum.net/breakingnews/' + Category_url + url_page + str(i)
         print(url)
