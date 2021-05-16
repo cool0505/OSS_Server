@@ -19,9 +19,9 @@ def aritcle_dbsaver(title, content, category, summary, keyword, sentiment):
     else:
         print(num)
     audio=TTS.tts(title+content)
-    swavfile.write("news/%s/%s"%(category,num), rate=SAMPLING_RATE, data=audio.numpy())
-    TTS.tts(summary)
-    swavfile.write("summary/%s/%s" % (category, num), rate=SAMPLING_RATE, data=audio.numpy())
+    swavfile.write("news/%s/%s.wav"%(category,num), rate=SAMPLING_RATE, data=audio.numpy())
+    TTS.tts("".join(summary))
+    swavfile.write("summary/%s/%s.wav" % (category, num), rate=SAMPLING_RATE, data=audio.numpy())
     dir = db.reference('news/%s/%s'% (category,num))
     dir.update({'title':'%s'%(title)})
     dir.update({'content':'%s'%(content)})

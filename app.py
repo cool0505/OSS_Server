@@ -93,13 +93,14 @@ def ai():
 @app.route('/audio/<category>/<audionum>')
 def streamwav(category,audionum):
     print(audionum)
+    print(category)
     def generate(category,audionum):
         with open("news/%s/%s.wav" %(category,audionum), "rb") as fwav:
             data = fwav.read(1024)
             while data:
                 yield data
                 data = fwav.read(1024)
-    return Response(generate(audionum), mimetype="audio/x-wav")
+    return Response(generate(category,audionum), mimetype="audio/x-wav")
 
 
 @app.route('/insert/<username>', methods=['POST', 'GET'])

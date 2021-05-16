@@ -1,6 +1,7 @@
 import firebaseDao
 import Crawling
 import Sentiment_analysis
+from time import sleep
 society= []
 sports= []
 politics= []
@@ -24,7 +25,8 @@ def article_saver():
             summaries, keywords,sentiments = Sentiment_analysis.data(contents)
             for title, content, summary, keyword, sentiment in zip(titles, contents, summaries, keywords,sentiments):
                 firebaseDao.aritcle_dbsaver(title, content, category_en,summary, keyword, sentiment)
+                sleep(30)
         except:
             print ("error skip /n")
-
+        sleep(100)
 article_saver()
