@@ -90,11 +90,11 @@ def ai():
     else:
         return "fail"
 
-@app.route('/audio/<audionum>')
-def streamwav(audionum):
+@app.route('/audio/<category>/<audionum>')
+def streamwav(category,audionum):
     print(audionum)
-    def generate(audionum):
-        with open("songs/%s.wav" %(audionum), "rb") as fwav:
+    def generate(category,audionum):
+        with open("news/%s/%s.wav" %(category,audionum), "rb") as fwav:
             data = fwav.read(1024)
             while data:
                 yield data
