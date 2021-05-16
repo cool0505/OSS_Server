@@ -4,6 +4,7 @@ from pathlib import Path
 from pprint import pprint
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+import scipy.io.wavfile as swavfile
 import yaml
 import json
 import numpy as np
@@ -273,5 +274,4 @@ for text in process_text(long_text):
     if text:
         print(text)
         audio = generate_audio_glow_tts(text, noise_scale=0.333, length_scale=0.9)
-        print ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        audio.write_audiofile("success.wav")
+        swavfile.write("news/Society/0", rate=SAMPLING_RATE, data=audio.numpy())

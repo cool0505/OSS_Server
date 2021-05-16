@@ -2,10 +2,12 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 import TTS
+import scipy.io.wavfile as swavfile
 cred = credentials.Certificate('oss-project-f6fb6-firebase-adminsdk-9vwfe-27b8f530ff.json')
 firebase_admin.initialize_app(cred,{
     'databaseURL' : 'https://oss-project-f6fb6-default-rtdb.firebaseio.com/'
 })
+SAMPLING_RATE = 22050
 def aritcle_dbsaver(title, content, category, summary, keyword, sentiment):
     num = 0;
     ref = db.reference('news/%s'%(category))
@@ -17,9 +19,9 @@ def aritcle_dbsaver(title, content, category, summary, keyword, sentiment):
     else:
         print(num)
     audio=TTS.tts(title+content)
-    audio.write_audiofile("news/%s/%s"%(category,num))
+    swavfile.write("news/%s/%s"%(category,num), rate=SAMPLING_RATE, data=audio.numpy())
     TTS.tts(summary)
-    audio.write_audiofile("summary/%s/%s" % (category, num))
+    swavfile.write("summary/%s/%s" % (category, num), rate=SAMPLING_RATE, data=audio.numpy())
     dir = db.reference('news/%s/%s'% (category,num))
     dir.update({'title':'%s'%(title)})
     dir.update({'content':'%s'%(content)})
