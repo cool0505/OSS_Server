@@ -25,7 +25,7 @@ def aritcle_dbsaver(title, content, category, summary, keyword, sentiment):
     dir = db.reference('news/%s/%s'% (category,num))
     dir.update({'title':'%s'%(title)})
     dir.update({'content':'%s'%(content)})
-    dir.update({'summary': '%s' % (summary)})
+    dir.update({'summary': '%s' % (','.join(summary))})
     dir.update({'keyword': '%s' % (','.join(keyword))})
-    dir.update({'sentiment': '%s' % (sentiment)})
+    dir.update({'sentiment': '%s' % (','.join(sentiment))})
 

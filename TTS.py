@@ -89,6 +89,8 @@ def generate_audio_glow_tts(text, noise_scale=0.333, length_scale=0.9):
     mel_original = inference_glow_tts(text, glow_tts, noise_scale, length_scale)
     mel_nomalized = normalize_mel(mel_original, mb_mean, mb_sigma)
     audio = synthesis(mb_melgan, pqmf, mel_nomalized)
+    del mel_original
+    del mel_nomalized
     return audio
 
 def generate_audio_fastspeech2(text):
@@ -256,5 +258,6 @@ def tts(text):
     if text:
         print(text)
         audio = generate_audio_glow_tts(text, noise_scale=0.333, length_scale=0.9)
+    del text
     return audio
 

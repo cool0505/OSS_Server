@@ -5,8 +5,22 @@ import json
 import socket
 from glob import glob
 import os
+from requests import get
+import Sentiment_analysis
+import threading
+import time
+import Operation
 
 app = Flask(__name__)
+
+class Worker(threading.Thread):
+    def __init__(self, name):
+        super().__init__()
+        self.name = name            # thread 이름 지정
+
+    def run(self):
+        Operation.article_saver()
+        time.sleep(3600)
 
 @app.route('/userLogin', methods = ['GET', 'POST'])
 def chat():
@@ -36,7 +50,7 @@ def register(msg_received):
     try:
         db_cursor.execute(insert_query, insert_values)
         chat_db.commit()
-        sql="CREATE TABLE "+name+"(title VARCHAR(255) NOT NULL, content VARCHAR(255) NOT NULL, registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)default character set utf8 collate utf8_general_ci"
+        sql="CREATE TABLE "+name+"(title VARCHAR(255) NOT NULL, content VARCHAR(255) NOT NULL,summary VARCHAR(255) NOT NULL,keyword VARCHAR(255) NOT NULL,sentiment VARCHAR(255) NOT NULL, registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)default character set utf8 collate utf8_general_ci"
         db_cursor.execute(sql)
         chat_db.commit()
         return "success"
@@ -71,11 +85,11 @@ def ai():
     if "읽어" in msg :
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.connect(('8.8.8.8', 80))
-            return "http://%s:%s/audio/%s/%s"% (s.getsockname()[0], PORT,arr[1],arr[2])
+            return "http://%s:%s/audio/%s/%s"% (get("https://api.ipify.org").text, PORT,arr[1],arr[2])
     elif "요약" in msg :
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.connect(('8.8.8.8', 80))
-            return "http://%s:%s/audio/%s" % (s.getsockname()[0], PORT, arr[2])
+            return "http://%s:%s/summary/%s/%s" % (get("https://api.ipify.org").text, PORT, arr[1],arr[2])
     else:
         return "fail"
 
@@ -92,7 +106,7 @@ def streamwav(category,audionum):
     return Response(generate(category,audionum), mimetype="audio/x-wav")
 
 @app.route('/summary/<category>/<audionum>')
-def streamwav(category,audionum):
+def streamsummary(category,audionum):
     print(audionum)
     print(category)
     def generate(category,audionum):
@@ -110,8 +124,9 @@ def insert(username):
     msg_received = request.get_json()
     title = msg_received["title"]
     content = msg_received["content"]
-    insert_query = "INSERT INTO "+username+" (title,content) VALUES (%s,%s)"
-    insert_values = (title, content)
+    summary, keyword, sentiment = Sentiment_analysis.data(content)
+    insert_query = "INSERT INTO "+username+" (title,content,summary, keyword, sentiment) VALUES (%s,%s,%s,%s,%s)"
+    insert_values = (title, content,','.join(summary),','.join(keyword),','.join(sentiment))
     try:
         db_cursor.execute(insert_query, insert_values)
         chat_db.commit()
@@ -130,9 +145,9 @@ def getdata(username):
         result=db_cursor.fetchall()
         sum_result_string=""
         for i in result:
-            title, content, date = i
+            title, content, summary , keyword , sentiment , date = i
             date= date.strftime('%Y-%m-%d %H:%M:%S')
-            result_string="{{"+title+"//"+content+"//"+date+"}}"
+            result_string="{{"+title+"//"+content+"//"+summary+"//"+keyword+"//"+sentiment+"//"+date+"}}"
             sum_result_string+=result_string
         return sum_result_string
     except Exception as e:
@@ -141,9 +156,10 @@ def getdata(username):
 
 if __name__ == '__main__':
     PORT = 8000
-
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         s.connect(('8.8.8.8', 80))
         print('[*] Open http://%s:%s on your browser ' % (s.getsockname()[0], PORT))
-
     app.run(host='0.0.0.0', port=PORT)
+    t = Worker("Crawl")  # sub thread 생성
+    t.start()
+

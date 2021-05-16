@@ -23,9 +23,8 @@ def article_saver():
         titles, contents = Crawling.split(Crawling.news_link(category,Category_url), category_ko)
         for title, content,in zip(titles, contents):
             try:
-                summary, keyword, sentiment = Sentiment_analysis.data(content)
-                firebaseDao.aritcle_dbsaver(title, content, category_en,summary, keyword, sentiment)
+                if(len(content)<3000):
+                    summary, keyword, sentiment = Sentiment_analysis.data(content)
+                    firebaseDao.aritcle_dbsaver(title, content, category_en,summary, keyword, sentiment)
             except:
                 print ("error skip /n")
-
-article_saver()
