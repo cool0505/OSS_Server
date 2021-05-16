@@ -82,7 +82,7 @@ def ai():
     if "읽어" in msg :
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.connect(('8.8.8.8', 80))
-            return "http://%s:%s/audio/%s"% (s.getsockname()[0], PORT,arr[2])
+            return "http://%s:%s/audio/%s/%s"% (s.getsockname()[0], PORT,arr[1],arr[2])
     elif "요약" in msg :
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.connect(('8.8.8.8', 80))
