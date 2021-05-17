@@ -100,7 +100,6 @@ def summary(_sentences, words):
     for row in summary:
         print(row)
         summarys.append(row)
-        print()
         count = count + 1
         if (count > 3):
             break
