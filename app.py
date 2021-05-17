@@ -10,16 +10,33 @@ import Sentiment_analysis
 import threading
 import time
 import Operation
+society= []
+sports= []
+politics= []
+economic= []
+foreign= []
+culture= []
+entertain= []
+digital= []
+editorial= []
+press = []
+Category = [society, sports,politics,economic,foreign,culture,entertain,digital,editorial,press]
+Category_ko = ['사회', '스포츠','정치','경제','국제','문화','연예','IT','칼럼','보도자료']
+Category_En = ['Society', 'Sports', 'Politics', 'Economic', 'Foreign', 'Culture', 'Entertain', 'Digital', 'Editorial',
+               'Press']
+Category_urls= ['society','sports','politics','economic','foreign', 'culture','entertain','digital', 'editorial','press']
 
 app = Flask(__name__)
 
 class Worker(threading.Thread):
+
     def __init__(self, name):
         super().__init__()
         self.name = name            # thread 이름 지정
 
     def run(self):
-        Operation.article_saver()
+        for category, category_ko, category_en, Category_url in zip(Category, Category_ko, Category_En, Category_urls):
+            Operation.article_saver(category, category_ko, category_en,Category_url)
         time.sleep(3600)
 
 @app.route('/userLogin', methods = ['GET', 'POST'])
