@@ -153,13 +153,13 @@ def getdata(username):
     except Exception as e:
         print("Error while inserting the new record :", repr(e))
         return "failure"
-
+t = Worker("Crawl")  # sub thread 생성
+t.start()
 if __name__ == '__main__':
     PORT = 8000
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         s.connect(('8.8.8.8', 80))
         print('[*] Open http://%s:%s on your browser ' % (s.getsockname()[0], PORT))
     app.run(host='0.0.0.0', port=PORT)
-    t = Worker("Crawl")  # sub thread 생성
-    t.start()
+
 

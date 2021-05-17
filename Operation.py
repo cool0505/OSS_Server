@@ -1,6 +1,7 @@
 import firebaseDao
 import Crawling
 import Sentiment_analysis
+import gc
 from time import sleep
 society= []
 sports= []
@@ -28,3 +29,5 @@ def article_saver():
                     firebaseDao.aritcle_dbsaver(title, content, category_en,summary, keyword, sentiment)
             except:
                 print ("error skip /n")
+        gc.collect()
+        del summary, keyword, sentiment, titles, contents
