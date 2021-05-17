@@ -35,11 +35,9 @@ class Worker(threading.Thread):
         self.name = name            # thread 이름 지정
 
     def run(self):
-        Operation.article_saver(society, '사회', 'Society','society')
-        Operation.article_saver(sports, '스포츠', 'Sports', 'sports')
-        Operation.article_saver(politics, '정치', 'Politics', 'politics')
-        Operation.article_saver(economic, '경제', 'Economic', 'economic')
-        time.sleep(60)
+        for category, category_ko, category_en, Category_url in zip(Category, Category_ko, Category_En, Category_urls):
+            Operation.article_saver(category, category_ko, category_en,Category_url)
+        time.sleep(3600)
 
 @app.route('/userLogin', methods = ['GET', 'POST'])
 def chat():

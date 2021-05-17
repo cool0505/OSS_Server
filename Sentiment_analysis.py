@@ -159,15 +159,11 @@ def text_processing(start, end, _sentences):
     df['negative'] = negative_list
     df['neutral'] = neutral_list
     df['positive'] = positive_list
-
+    del negative_list,neutral_list,positive_list,negative,neutral,positive,words_list
     return df
 
 def sentiment_analysis(_sentences):
-    df = text_processing(0,366, _sentences)
-
-    df.to_csv('./result.csv', index=False)
-
-    ds = pd.read_csv('./result.csv')
+    ds = text_processing(0,366, _sentences)
     ds == ds.values.max()
     ids, cols = np.where(ds == ds.values.max())
     list(zip(ids, cols))
