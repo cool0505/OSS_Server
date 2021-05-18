@@ -35,9 +35,10 @@ class Worker(threading.Thread):
         self.name = name            # thread 이름 지정
 
     def run(self):
-        for category, category_ko, category_en, Category_url in zip(Category, Category_ko, Category_En, Category_urls):
-            Operation.article_saver(category, category_ko, category_en,Category_url)
-        time.sleep(3600)
+        while(1):
+            for category, category_ko, category_en, Category_url in zip(Category, Category_ko, Category_En, Category_urls):
+                Operation.article_saver(category, category_ko, category_en,Category_url)
+            time.sleep(3600)
 
 @app.route('/userLogin', methods = ['GET', 'POST'])
 def chat():

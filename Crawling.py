@@ -4,7 +4,9 @@ from lxml.html import fromstring
 from bs4 import  BeautifulSoup
 
 def news_link(category,Category_url):
-    for i in range(1, 2):
+    i=1
+    num=0
+    if i==1:
         url_page = '?page='
         url = 'https://news.daum.net/breakingnews/' + Category_url + url_page + str(i)
         print(url)
@@ -21,6 +23,10 @@ def news_link(category,Category_url):
 
             link = parsed_link[0].get('href')
             category.append(link)
+            if num == 5:
+                break
+            num+=1
+
     return category
 
 def split(category, category_ko):
