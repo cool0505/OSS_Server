@@ -257,7 +257,7 @@ def tts(text):
     text = text.strip()
     if text:
         print(text)
-        audio = generate_audio_glow_tts(text, noise_scale=0.333, length_scale=0.9)
+        audio = generate_audio_glow_tts(text, noise_scale=0.43, length_scale=1.1)
     del text
     return audio
 

@@ -23,7 +23,7 @@ def news_link(category,Category_url):
 
             link = parsed_link[0].get('href')
             category.append(link)
-            if num == 5:
+            if num == 4:
                 break
             num+=1
 
