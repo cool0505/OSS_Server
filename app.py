@@ -10,6 +10,8 @@ import Sentiment_analysis
 import threading
 import time
 import Operation
+import TTS
+import scipy.io.wavfile as swavfile
 society= []
 sports= []
 politics= []
@@ -68,7 +70,7 @@ def register(msg_received):
     try:
         db_cursor.execute(insert_query, insert_values)
         chat_db.commit()
-        sql="CREATE TABLE "+name+"(title VARCHAR(255) NOT NULL, content VARCHAR(255) NOT NULL,summary VARCHAR(255) NOT NULL,keyword VARCHAR(255) NOT NULL,sentiment VARCHAR(255) NOT NULL, registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)default character set utf8 collate utf8_general_ci"
+        sql="CREATE TABLE "+id+"(title VARCHAR(255) NOT NULL, content VARCHAR(255) NOT NULL,summary VARCHAR(255) NOT NULL,keyword VARCHAR(255) NOT NULL,sentiment VARCHAR(255) NOT NULL, registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP)default character set utf8 collate utf8_general_ci"
         db_cursor.execute(sql)
         chat_db.commit()
         return "success"
@@ -86,6 +88,7 @@ def login(msg_received):
 
     if len(records) == 0:
         return "failure"
+    else:
         return "success"
 try:
     chat_db = mysql.connector.connect(host="localhost", user="root", passwd="0000", database="user",charset='utf8')
@@ -136,14 +139,14 @@ def streamsummary(category,audionum):
     return Response(generate(category,audionum), mimetype="audio/x-wav")
 
 
-@app.route('/insert/<username>', methods=['POST', 'GET'])
+@app.route('/insert/<id>', methods=['POST', 'GET'])
 
-def insert(username):
+def insert(id):
     msg_received = request.get_json()
     title = msg_received["title"]
     content = msg_received["content"]
     summary, keyword, sentiment = Sentiment_analysis.data(content)
-    insert_query = "INSERT INTO "+username+" (title,content,summary, keyword, sentiment) VALUES (%s,%s,%s,%s,%s)"
+    insert_query = "INSERT INTO "+id+" (title,content,summary, keyword, sentiment) VALUES (%s,%s,%s,%s,%s)"
     insert_values = (title, content,','.join(summary),','.join(keyword),','.join(sentiment))
     try:
         db_cursor.execute(insert_query, insert_values)
@@ -153,11 +156,11 @@ def insert(username):
         print("Error while inserting the new record :", repr(e))
         return "failure"
 
-@app.route('/getdata/<username>', methods=['POST', 'GET'])
+@app.route('/getdata/<id>', methods=['POST', 'GET'])
 
-def getdata(username):
+def getdata(id):
 
-    insert_query = "SELECT * FROM user."+username
+    insert_query = "SELECT * FROM user."+id
     try:
         db_cursor.execute(insert_query)
         result=db_cursor.fetchall()
@@ -171,6 +174,10 @@ def getdata(username):
     except Exception as e:
         print("Error while inserting the new record :", repr(e))
         return "failure"
+@app.route('/tts/<content>')
+def tts(content):
+    audio = TTS.tts(content)
+    return send_file(swavfile(22050, data=audio.numpy()))
 t = Worker("Crawl")  # sub thread 생성
 t.start()
 if __name__ == '__main__':
