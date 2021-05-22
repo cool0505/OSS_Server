@@ -7,26 +7,10 @@ from requests import get
 import Sentiment_analysis
 import threading
 import time
-import Operation
 import TTS
 import scipy.io.wavfile as swavfile
-society= []
-sports= []
-politics= []
-economic= []
-foreign= []
-culture= []
-entertain= []
-digital= []
-editorial= []
-press = []
-Category = [society, sports,politics,economic,foreign,culture,entertain,digital,editorial,press]
-Category_ko = ['사회', '스포츠','정치','경제','국제','문화','연예','IT','칼럼','보도자료']
-Category_En = ['Society', 'Sports', 'Politics', 'Economic', 'Foreign', 'Culture', 'Entertain', 'Digital', 'Editorial',
-               'Press']
-Category_urls= ['society','sports','politics','economic','foreign', 'culture','entertain','digital', 'editorial','press']
-
 app = Flask(__name__)
+from os import system
 
 class Worker(threading.Thread):
 
@@ -36,9 +20,8 @@ class Worker(threading.Thread):
 
     def run(self):
         while(1):
-            for category, category_ko, category_en, Category_url in zip(Category, Category_ko, Category_En, Category_urls):
-                Operation.article_saver(category, category_ko, category_en,Category_url)
-            time.sleep(3600)
+            system("python Operation.py")
+            time.sleep(120)
 
 @app.route('/userLogin', methods = ['GET', 'POST'])
 def chat():
@@ -178,7 +161,7 @@ def tts(content):
     swavfile.write("audio.wav", 22050, data=audio.numpy())
     return send_file("audio.wav")
 t = Worker("Crawl")  # sub thread 생성
-t.start()
+t.start() #크롤릴 코드 주석처리하면 실행 안됨
 if __name__ == '__main__':
     PORT = 8000
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
